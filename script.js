@@ -87,6 +87,18 @@ window.addEventListener("load", (e) => {
       this.frameY = 0;
     }
     draw(context) {
+      // context.lineWidth = 5;
+      // context.strokeStyle = "white";
+      // context.beginPath();
+      // context.arc(
+      //   this.x + this.width / 2,
+      //   this.y + this.height / 2 + 20,
+      //   this.width / 3,
+      //   0,
+      //   Math.PI * 2
+      // );
+      // context.stroke();
+
       context.drawImage(
         this.image,
         this.frameX * this.width,
@@ -102,10 +114,10 @@ window.addEventListener("load", (e) => {
     update(input, deltaTime, enemies) {
       //collision detection
       enemies.forEach((enemy) => {
-        const dx = enemy.x + enemy.width / 2 - (this.x + this.width / 2);
-        const dy = enemy.y + enemy.height / 2 - (this.y + this.width / 2);
+        const dx = enemy.x + enemy.width / 2 - 25 - (this.x + this.width / 2);
+        const dy = enemy.y + enemy.height / 2 - (this.y + this.width / 2 + 20);
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < enemy.width / 2 + this.width / 2) {
+        if (distance < enemy.width / 3 + this.width / 3) {
           gameOver = true;
         }
       });
@@ -225,6 +237,17 @@ window.addEventListener("load", (e) => {
         this.width,
         this.height
       );
+      // context.lineWidth = 5;
+      // context.strokeStyle = "white";
+      // context.beginPath();
+      // context.arc(
+      //   this.x + this.width / 2 - 25,
+      //   this.y + this.height / 2,
+      //   this.width / 3,
+      //   0,
+      //   Math.PI * 2
+      // );
+      // context.stroke();
     }
 
     update(deltaTime) {
@@ -290,7 +313,6 @@ window.addEventListener("load", (e) => {
     animate(0);
   }
   function toggleFullScreen() {
-    console.log(document.fullscreenElement);
     if (!document.fullscreenElement) {
       canvas
         .requestFullscreen()
@@ -316,9 +338,9 @@ window.addEventListener("load", (e) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     background.draw(ctx);
     background.update();
+    handleEnemies(deltaTime);
     player.draw(ctx);
     player.update(input, deltaTime, enemies);
-    handleEnemies(deltaTime);
     displayStatusText(ctx);
     if (!gameOver) requestAnimationFrame(animate);
   }
