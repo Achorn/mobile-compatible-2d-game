@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden;
+  /* user-select: none; */
   /* elements border is included in total width */
 }
 body {

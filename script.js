@@ -10,6 +10,8 @@ window.addEventListener("load", (e) => {
   class InputHandler {
     constructor() {
       this.keys = [];
+      this.touchY = "";
+      this.touchThreshold = 30;
 
       document.addEventListener("keydown", (e) => {
         if (
@@ -31,6 +33,29 @@ window.addEventListener("load", (e) => {
         ) {
           this.keys.splice(this.keys.indexOf(e.key), 1);
         }
+      });
+      window.addEventListener("touchstart", (e) => {
+        this.touchY = e.changedTouches[0].pageY;
+      });
+      window.addEventListener("touchmove", (e) => {
+        const swipeDist = e.changedTouches[0].pageY - this.touchY;
+        if (
+          swipeDist < -this.touchThreshold &&
+          this.keys.indexOf("swipe up") === -1
+        )
+          this.keys.push("swipe up");
+        else if (
+          swipeDist > this.touchThreshold &&
+          this.keys.indexOf("swipe down") === -1
+        ) {
+          this.keys.push("swipe down");
+          if (gameOver) restartGame();
+        }
+      });
+      window.addEventListener("touchend", (e) => {
+        console.log(this.keys);
+        this.keys.splice(this.keys.indexOf("swipe up"), 1);
+        this.keys.splice(this.keys.indexOf("swipe down"), 1);
       });
     }
   }
@@ -93,7 +118,7 @@ window.addEventListener("load", (e) => {
         this.frameTimer += deltaTime;
       }
 
-      //controlls
+      //controls
       if (input.keys.indexOf("ArrowRight") > -1) {
         this.speed = 5;
       } else if (input.keys.indexOf("ArrowLeft") > -1) {
@@ -102,7 +127,11 @@ window.addEventListener("load", (e) => {
         this.speed = 0;
       }
 
-      if (input.keys.indexOf("ArrowUp") > -1 && this.onGround()) {
+      if (
+        (input.keys.indexOf("ArrowUp") > -1 ||
+          input.keys.indexOf("swipe up") > -1) &&
+        this.onGround()
+      ) {
         this.vy -= 30;
       }
 
@@ -226,7 +255,6 @@ window.addEventListener("load", (e) => {
     });
     //check for deletion
     enemies = enemies.filter((enemy) => !enemy.markedForDeletion);
-    console.log(enemies);
   }
 
   function displayStatusText(context) {
